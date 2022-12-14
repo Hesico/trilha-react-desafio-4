@@ -10,23 +10,18 @@ import { defaultValues, IFormLogin } from "./types";
 const schema = yup
   .object({
     email: yup.string().email("E-mail inválido").required("Campo obrigatório"),
-    password: yup
-      .string()
-      .min(6, "No minimo 6 caracteres")
-      .required("Campo obrigatório"),
-  })
-  .required();
+    password: yup.string().min(6, "No minimo 6 caracteres").required("Campo obrigatório"),
+  }).required();
 
 const Login = () => {
-  const {
-    control,
-    formState: { errors, isValid },
-  } = useForm<IFormLogin>({
+  const { control, formState: { errors, isValid }, handleSubmit } = useForm<IFormLogin>({
     resolver: yupResolver(schema),
     mode: "onBlur",
     defaultValues,
     reValidateMode: "onChange",
   });
+
+  const showInConsole = (formData : IFormLogin) => console.log(formData);
 
   return (
     <Container>
@@ -49,7 +44,7 @@ const Login = () => {
             errorMessage={errors?.password?.message}
           />
           <Spacing />
-          <Button title="Entrar" />
+          <Button title="Entrar" disable={!isValid} onClick={handleSubmit(showInConsole)}/>
         </Column>
       </LoginContainer>
     </Container>
